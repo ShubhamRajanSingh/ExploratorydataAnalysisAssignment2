@@ -1,0 +1,26 @@
+require(ggplot2)
+
+# Loading provided datasets - loading from local machine
+summary <- readRDS("E:\\RWorkplace\\ExploratorydataAnalysisAssignment2\\summarySCC_PM25.rds")
+SCC <- readRDS("E:\\RWorkplace\\ExploratorydataAnalysisAssignment2\\Source_Classification_Code.rds")
+
+# Sampling
+summary_sampling <- summary[sample(nrow(NEI), size=5000, replace=F), ]
+
+# Baltimore City, Maryland == fips
+MD <- subset(NEI, fips == 24510)
+MD$year <- factor(MD$year, levels=c('1999', '2002', '2005', '2008'))
+
+
+# Use the ggplot2 plotting system to make a plot answer this question.
+
+# Generate the graph in the same directory as the source code
+png(filename='E:\\RWorkplace\\ExploratorydataAnalysisAssignment2\\plot3.png', width=800, height=500, units='px')
+
+ggplot(data=MD, aes(x=year, y=log(Emissions))) + facet_grid(. ~ type) + guides(fill=F) +
+  geom_boxplot(aes(fill=type)) + stat_boxplot(geom ='errorbar') +
+  ylab(expression(paste('Log', ' of PM 2.5', ' Emissions'))) + xlab('Year') + 
+  ggtitle('Emissions per Type in Baltimore City, Maryland') +
+  geom_jitter(alpha=0.10)
+
+dev.off()
